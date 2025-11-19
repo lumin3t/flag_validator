@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Validator</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 10px;
+        }
+        form {
+            margin-bottom: 15px;
+            border: 1px dashed #333;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        label {
+            width: 150px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #000;
+        }
+        button {
+            padding: 5px 10px;
+            background: #ccc;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+        .status {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flag Validator!</h1>
+    <p>The format is flag{...}</p>
+    
+    <h3>From the demo hack</h3>
+    <form id="demo-form" action="#">
+        <label for="flag-demo">Flag from UAG hack:</label>
+        <input type="text" id="flag-demo" required>
+        <button type="submit">Submit</button>
+        <div id="status-demo" class="status"></div>
+    </form>
+
+    <p>The ctf challenges</p>
+    
+    <form id="ctf-form-1" action="#">
+        <label for="ctf-flag-1">Challenge 1 (IDOR):</label>
+        <input type="text" id="ctf-flag-1" required>
+        <button type="submit">Submit</button>
+        <div id="status-ctf-1" class="status"></div>
+    </form>
+    
+    <form id="ctf-form-2" action="#">
+        <label for="ctf-flag-2">Challenge 2 (CMD Inj.):</label>
+        <input type="text" id="ctf-flag-2" required>
+        <button type="submit">Submit</button>
+        <div id="status-ctf-2" class="status"></div>
+    </form>
+    
+    <form id="ctf-form-3" action="#">
+        <label for="ctf-flag-3">Challenge 3 (XSS):</label>
+        <input type="text" id="ctf-flag-3" required>
+        <button type="submit">Submit</button>
+        <div id="status-ctf-3" class="status"></div>
+    </form>
+    
+    <form id="ctf-form-4" action="#">
+        <label for="ctf-flag-4">Challenge 4 (Sec. Q):</label>
+        <input type="text" id="ctf-flag-4" required>
+        <button type="submit">Submit</button>
+        <div id="status-ctf-4" class="status"></div>
+    </form>
+</body>
+<script>
+    // Define the correct flags
+    const CORRECT_FLAGS = {
+        'flag-demo': 'flag{F0r3st_4dm1n_bYP4s5_2024}',
+        'ctf-flag-1': 'flag{c00k13_m0d1f1c4t10n_ftw}',
+        'ctf-flag-2': 'flag{c0mm4nd_1nj3ct10n_c0w_s4ys_m00}',
+        'ctf-flag-3': 'flag{xss_4l3rt_m4st3r_2024}',
+        'ctf-flag-4': 'flag{s3cur1ty_qu3st10ns_4r3_1ns3cur3}'
+    };
+
+    /**
+     * Validates the submitted flag against the correct answer.
+     * @param {string} inputId The ID of the input field.
+     * @param {string} statusId The ID of the status div.
+     */
+    function validateFlag(inputId, statusId) {
+        const input = document.getElementById(inputId);
+        const statusDiv = document.getElementById(statusId);
+        // Trim and ensure the key is present in the dictionary
+        const submittedFlag = input.value.trim(); 
+        const correctFlag = CORRECT_FLAGS[inputId];
+
+        statusDiv.classList.remove('correct', 'incorrect');
+        statusDiv.textContent = ''; // Clear previous message
+
+        if (submittedFlag === correctFlag) {
+            statusDiv.textContent = 'Correct!';
+            statusDiv.classList.add('correct');
+            return true;
+        } else {
+            statusDiv.textContent = 'Incorrect!';
+            statusDiv.classList.add('incorrect');
+            return false;
+        }
+    }
+
+    // --- Attach Event Listeners to Forms ---
+
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        // Find the input and status elements within this specific form
+        const input = form.querySelector('input[type="text"]');
+        const statusDiv = form.querySelector('.status');
+        
+        // Attach listener
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Stop form submission/page reload
+            validateFlag(input.id, statusDiv.id);
+        });
+        
+        // Give the status div a unique ID based on the input ID
+        if (input && statusDiv) {
+             statusDiv.id = `status-${input.id}`;
+        }
+    });
+</script>
+</html>
